@@ -5,7 +5,7 @@ import rsa
 from pathlib import Path
 from dbr import *
 
-__version__ = '0.1.0'
+__version__ = '0.1.1'
 
 v1 = [0x01, 0xe1, 0x02, 0x45]
 v2 = [0x01, 0x9b, 0x09, 0x45]
@@ -353,10 +353,7 @@ def parse_file(filename, encrypted=True, license=''):
     """
     
     data = decode_pdf417(filename, license)
-    if len(data) != 720:
+    if data == None or len(data) != 720:
         return None
     
-    if data != None:
-        return parse_bytes(data, encrypted)
-    
-    return None
+    return parse_bytes(data, encrypted)
