@@ -1,7 +1,7 @@
 # Python Decoder for Driving License in South Africa
 The Python project is used to decode, decrypt and parse South African driving licenses. The PDF417 decoding part relies on [Dynamsoft Barcode Reader](https://www.dynamsoft.com/barcode-reader/overview/), which requires a [license key](https://www.dynamsoft.com/customer/license/trialLicense?product=dbr). 
 
-![South Africa Driving License Parser](https://www.dynamsoft.com/codepool/img/2022/12/south-africa-driving-license.png)
+![South Africa Driving License Parser](https://camo.githubusercontent.com/fecababb27c452d4cfc669e5f0755c41ffdb7244e24d41f0096be09e65ef92bc/68747470733a2f2f7777772e64796e616d736f66742e636f6d2f636f6465706f6f6c2f696d672f323032322f31322f736f7574682d6166726963612d64726976696e672d6c6963656e73652e706e67)
 
 
 ## Command-line Usage
