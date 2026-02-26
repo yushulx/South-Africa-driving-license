@@ -17,7 +17,7 @@ jobs:
       - name: Run test.py 
         run: |
           python -m pip install -e .
-          python test.py
+          python test.py ./images/dl.png
 
       - name: Install build tooling
         run: |
