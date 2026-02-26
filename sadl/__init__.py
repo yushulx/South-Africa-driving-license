@@ -3,9 +3,9 @@
 import base64
 import rsa
 from pathlib import Path
-from dbr import *
+from dynamsoft_barcode_reader_bundle import *
 
-__version__ = '0.1.1'
+__version__ = '0.2.0'
 
 v1 = [0x01, 0xe1, 0x02, 0x45]
 v2 = [0x01, 0x9b, 0x09, 0x45]
@@ -47,11 +47,14 @@ def decode_pdf417(image_file, license_key=''):
     key = "DLS2eyJoYW5kc2hha2VDb2RlIjoiMjAwMDAxLTE2NDk4Mjk3OTI2MzUiLCJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSIsInNlc3Npb25QYXNzd29yZCI6IndTcGR6Vm05WDJrcEQ5YUoifQ=="
     if (license_key != ''):
         key = license_key
-    BarcodeReader.init_license(key)
-    reader = BarcodeReader()
-    results = reader.decode_file(image_file)
-    if results != None and len(results) > 0:
-        return results[0].barcode_bytes
+    errorCode, errorMsg = LicenseManager.init_license(key)
+    if errorCode != EnumErrorCode.EC_OK and errorCode != EnumErrorCode.EC_LICENSE_CACHE_USED:
+        print("License initialization failed: ErrorCode:", errorCode, ", ErrorString:", errorMsg)
+    cvr = CaptureVisionRouter()
+    result = cvr.capture(image_file, EnumPresetTemplate.PT_READ_BARCODES.value)
+    barcode_result = result.get_decoded_barcodes_result()
+    if barcode_result is not None and len(barcode_result.get_items()) > 0:
+        return barcode_result.get_items()[0].get_bytes()
     else:
         return None
     

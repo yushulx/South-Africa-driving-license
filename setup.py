@@ -4,7 +4,7 @@ import io
 long_description = io.open("README.md", encoding="utf-8").read()
 
 setup(name='south-africa-driving-license',
-      version='0.1.1',
+      version='0.2.0',
       description='Decode, decrypt and parse South Africa driving license',
       long_description=long_description,
       long_description_content_type="text/markdown",
@@ -35,7 +35,7 @@ setup(name='south-africa-driving-license',
           "Topic :: Scientific/Engineering",
           "Topic :: Software Development",
       ],
-      install_requires=['dbr'],
+      install_requires=['dynamsoft-barcode-reader-bundle'],
       entry_points={
           'console_scripts': ['sadltool=sadl.scripts:sadltool']
       },
