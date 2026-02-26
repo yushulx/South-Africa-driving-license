@@ -4,7 +4,7 @@ import io
 long_description = io.open("README.md", encoding="utf-8").read()
 
 setup(name='south-africa-driving-license',
-      version='0.2.0',
+      version='0.2.1',
       description='Decode, decrypt and parse South Africa driving license',
       long_description=long_description,
       long_description_content_type="text/markdown",
