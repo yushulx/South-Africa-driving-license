@@ -16,7 +16,7 @@ jobs:
       
       - name: Run test.py 
         run: |
-          python -m pip install dynamsoft-capture-vision-bundle
+          python -m pip install -e .
           python test.py
 
       - name: Install build tooling

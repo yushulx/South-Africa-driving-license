@@ -1,9 +1,37 @@
 # https://github.com/ugommirikwe/sa-license-decoder/blob/master/SPEC.md
 
 import base64
-import rsa
 from pathlib import Path
 from dynamsoft_barcode_reader_bundle import *
+
+
+def _parse_pkcs1_pubkey(pem_str):
+    """Parse a PKCS#1 RSA public key PEM string and return (n, e) using only stdlib."""
+    lines = pem_str.strip().splitlines()
+    b64 = ''.join(l for l in lines if not l.startswith('-----'))
+    der = base64.b64decode(b64)
+
+    def read_length(data, pos):
+        length = data[pos]
+        pos += 1
+        if length & 0x80:
+            num_bytes = length & 0x7f
+            length = int.from_bytes(data[pos:pos + num_bytes], 'big')
+            pos += num_bytes
+        return length, pos
+
+    def read_int(data, pos):
+        assert data[pos] == 0x02, f'Expected INTEGER tag at {pos}'
+        pos += 1
+        length, pos = read_length(data, pos)
+        value = int.from_bytes(data[pos:pos + length], 'big')
+        return value, pos + length
+
+    assert der[0] == 0x30, 'Expected SEQUENCE'
+    _, pos = read_length(der, 1)
+    n, pos = read_int(der, pos)
+    e, pos = read_int(der, pos)
+    return n, e
 
 __version__ = '0.2.0'
 
@@ -80,24 +108,24 @@ def decrypt_data(data):
         pk74 = pk_v2_74
     
     all = bytearray()
-    
-    pubKey = rsa.PublicKey.load_pkcs1(pk128)
+
+    n128, e128 = _parse_pkcs1_pubkey(pk128)
     start = 6
     for i in range(5):
         block = data[start: start + 128]
         input = int.from_bytes(block, byteorder='big', signed=False)
-        output = pow(input, pubKey.e, mod=pubKey.n)
-        
+        output = pow(input, e128, n128)
+
         decrypted_bytes = output.to_bytes(128, byteorder='big', signed=False)
         all += decrypted_bytes
-        
+
         start = start + 128
-    
-    pubKey = rsa.PublicKey.load_pkcs1(pk74)
+
+    n74, e74 = _parse_pkcs1_pubkey(pk74)
     block = data[start: start + 74]
     input = int.from_bytes(block, byteorder='big', signed=False)
-    output = pow(input, pubKey.e, mod=pubKey.n)
-    
+    output = pow(input, e74, n74)
+
     decrypted_bytes = output.to_bytes(74, byteorder='big', signed=False)
     all += decrypted_bytes
     
